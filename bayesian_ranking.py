@@ -10,6 +10,7 @@
 '''
 from __future__ import division
 import math
+import pandas
 
 K = 5
 sk = [1,2,3,4,5]
@@ -31,6 +32,20 @@ def lower_bound_normal_credible_interval(nk):
     return terma - z*termb
 
 
+def read_idea_ratings_data(file):
+    data = pandas.read_csv(file, header=None)
+    return data.values.tolist()
+
+
+totalratings = 0
+totalstars = 0
+for a in read_idea_ratings_data("idea_ratings.csv"):
+    totalratings = totalratings + sum(a)
+    for k in range(K):
+        totalstars = totalstars + sk[k]*a[k]
+C = totalstars/totalratings
+
+
 def bayesian_weighted_average(nk):
     '''
         S = N*R + m*C / N+m
@@ -38,27 +53,22 @@ def bayesian_weighted_average(nk):
         R = average ratings on an idea
         C = average ratings on all ideas
     '''
+    print nk
     m = 1
     N = sum(nk)
     R = 0
     for k in range(K):
         R = R + sk[k]*nk[k]
     R = R/N
+    return (N*R + m*C)/(N+m)
 
-    totalratings = 0
-    totalstars = 0
-    for a in idea_ratings:
-        totalratings = totalratings + sum(a)
-        for k in range(K):
-            totalstars = totalstars + sk[k]*a[k]
 
-    C = totalstars/totalratings
-    return (N*R + m*C)/ (N+m)
+print map(
+    lower_bound_normal_credible_interval,
+    read_idea_ratings_data("idea_ratings.csv")
+    )
 
-idea_ratings = [
-    [0,1,1,1,1],
-    [0,0,1,1,2]
-    ]
-
-print map(lower_bound_normal_credible_interval, idea_ratings)
-print map(bayesian_weighted_average, idea_ratings)
+print map(
+    bayesian_weighted_average,
+    read_idea_ratings_data("idea_ratings.csv")
+    )
