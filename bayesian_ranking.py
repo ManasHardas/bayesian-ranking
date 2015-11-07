@@ -53,8 +53,7 @@ def bayesian_weighted_average(nk):
         R = average ratings on an idea
         C = average ratings on all ideas
     '''
-    print nk
-    m = 1
+    m = 10
     N = sum(nk)
     R = 0
     for k in range(K):
@@ -62,13 +61,19 @@ def bayesian_weighted_average(nk):
     R = R/N
     return (N*R + m*C)/(N+m)
 
-
-print map(
+def print_separate_lines(alist):
+    for a in alist:
+        print a
+    print "\n"
+    
+scores = map(
     lower_bound_normal_credible_interval,
     read_idea_ratings_data("idea_ratings.csv")
     )
+print_separate_lines(scores)
 
-print map(
+wavgs = map(
     bayesian_weighted_average,
     read_idea_ratings_data("idea_ratings.csv")
     )
+print_separate_lines(wavgs)
