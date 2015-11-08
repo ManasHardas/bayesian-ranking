@@ -45,7 +45,6 @@ for a in read_idea_ratings_data("idea_ratings.csv"):
         totalstars = totalstars + sk[k]*a[k]
 C = totalstars/totalratings
 
-
 def bayesian_weighted_average(nk):
     '''
         S = N*R + m*C / N+m
@@ -65,7 +64,7 @@ def print_separate_lines(alist):
     for a in alist:
         print a
     print "\n"
-    
+
 scores = map(
     lower_bound_normal_credible_interval,
     read_idea_ratings_data("idea_ratings.csv")
