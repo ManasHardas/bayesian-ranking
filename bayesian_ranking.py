@@ -67,12 +67,12 @@ def print_separate_lines(alist):
 
 scores = map(
     lower_bound_normal_credible_interval,
-    read_idea_ratings_data("idea_ratings.csv")
+    read_idea_ratings_data("sample.csv")
     )
 print_separate_lines(scores)
 
 wavgs = map(
     bayesian_weighted_average,
-    read_idea_ratings_data("idea_ratings.csv")
+    read_idea_ratings_data("sample.csv")
     )
 print_separate_lines(wavgs)
