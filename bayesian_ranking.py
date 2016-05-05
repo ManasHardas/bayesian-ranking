@@ -9,27 +9,35 @@
     https://docs.google.com/document/d/16lfMQFwggaf9jYf9YIP3cbfrW_PFNE1_Ay86A8H4STA/edit
 '''
 from __future__ import division
-import math
+from math import pow
 import pandas
 
 K = 5
+avg_damping = 0
+avg_boosting = 1
+sqrt_damping = 0
+sqrt_boosting = 1
 sk = [1,2,3,4,5]
 z = 1.65
+vote_multiplier = 10
 
 def lower_bound_normal_credible_interval(nk):
-
+    nk = [x*vote_multiplier for x in nk]
     N = sum(nk)
     terma = 0
     termb = 0
     wavg = 0
 
     for k in range(K):
-        avg = (nk[k]+1)/(N+K)
+
+        avg = (nk[k]+1)/(N+K+avg_damping) * avg_boosting
         terma = terma + sk[k]*avg
         wavg = wavg + sk[k]**2*avg
 
-    termb = math.sqrt((wavg-terma**2)/(N+K+1))
-    return terma - z*termb
+    termb = pow((wavg-terma**2)/(N+K+1+sqrt_damping) * sqrt_boosting, 0.5)
+    lb = terma - z*termb
+    ub = terma + z*termb
+    return lb
 
 
 def read_idea_ratings_data(file):
@@ -63,7 +71,7 @@ def bayesian_weighted_average(nk):
 def print_separate_lines(alist):
     for a in alist:
         print a
-    print "\n"
+
 
 scores = map(
     lower_bound_normal_credible_interval,
@@ -71,8 +79,8 @@ scores = map(
     )
 print_separate_lines(scores)
 
-wavgs = map(
-    bayesian_weighted_average,
-    read_idea_ratings_data("sample.csv")
-    )
-print_separate_lines(wavgs)
+# wavgs = map(
+#     bayesian_weighted_average,
+#     read_idea_ratings_data("sample.csv")
+#     )
+# print_separate_lines(wavgs)
